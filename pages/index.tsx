@@ -3,9 +3,11 @@ import Head from 'next/head'
 import { useState } from 'react'
 
 const Home: NextPage = () => {
-  const [imgSrc, setImgSrc] = useState('')
+  const [loading, setLoading] = useState<boolean>(false)
+  const [imgSrc, setImgSrc] = useState<string>('')
 
   const handleChange = (e: any) => {
+    setLoading(true)
     const formData = new FormData()
     formData.append('image', e.target.files[0])
 
@@ -13,6 +15,7 @@ const Home: NextPage = () => {
       .then((response) => response.blob())
       .then((myBlob) => {
         const objectURL = URL.createObjectURL(myBlob)
+        setLoading(false)
         setImgSrc(objectURL)
       })
   }
@@ -24,12 +27,21 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-6xl font-bold">HEIC to JPEG Convert</h1>
-        <p className="mt-3 text-2xl">
-          Choose any image and retrieve it as JPEG file.
-        </p>
-        <input accept="*" type="file" onChange={handleChange} />
-        <img src={imgSrc} width="auto" height="auto" />
+        <h1 className="text-6xl font-bold">Convert 2 JPEG</h1>
+
+        {loading ? (
+          <p className="mt-3 text-2xl">Processing...</p>
+        ) : (
+          <>
+            <p className="mt-3 text-2xl">
+              Choose any image file and retrieve it as JPEG.
+            </p>
+            <p className="mt-3">
+              <input accept="*" type="file" onChange={handleChange} />
+            </p>
+          </>
+        )}
+        {imgSrc && <img src={imgSrc} width="auto" height="auto" />}
       </main>
 
       <footer className="flex h-24 w-full items-center justify-center border-t">
