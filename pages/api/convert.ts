@@ -18,7 +18,7 @@ export default async function handler(
       if (err) reject({ err })
 
       sharp(files.image[0].path)
-        .jpeg({ quality: 90 })
+        .jpeg({ quality: 100 })
         .toBuffer()
         .then((output) => {
           res.setHeader('Content-Type', 'image/jpeg')
