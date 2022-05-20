@@ -22,7 +22,7 @@ const Home: NextPage = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
-        <title>2JPG</title>
+        <title>2JPG Converter</title>
 
         <link
           rel="apple-touch-icon"
