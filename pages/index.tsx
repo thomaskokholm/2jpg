@@ -5,6 +5,7 @@ import { useState } from 'react'
 const Home: NextPage = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [imgSrc, setImgSrc] = useState<string>('')
+  const [myBlob, setMyBlob] = useState<Blob>()
 
   const handleChange = (e: any) => {
     setLoading(true)
@@ -13,11 +14,24 @@ const Home: NextPage = () => {
 
     fetch('/api/convert', { method: 'post', body: formData })
       .then((response) => response.blob())
-      .then((myBlob) => {
-        const objectURL = URL.createObjectURL(myBlob)
+      .then((_myBlob) => {
+        setMyBlob(_myBlob)
+        const objectURL = URL.createObjectURL(_myBlob)
         setLoading(false)
         setImgSrc(objectURL)
       })
+  }
+  const share = (e: any) => {
+    if (myBlob && navigator.canShare) {
+      const newFile = new File([myBlob], 'name')
+      navigator.share({
+        title: 'Download',
+        text: 'Download image as JPEG',
+        files: [newFile],
+      })
+    } else {
+      console.log('Web Share API is not supported in your browser.')
+    }
   }
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
@@ -62,7 +76,12 @@ const Home: NextPage = () => {
             </p>
           </>
         )}
-        {imgSrc && <img src={imgSrc} width="auto" height="auto" />}
+        {imgSrc && (
+          <>
+            <img src={imgSrc} width="auto" height="auto" />
+            <button onClick={share}>Download</button>
+          </>
+        )}
       </main>
 
       <footer className="flex h-24 w-full items-center justify-center border-t">
