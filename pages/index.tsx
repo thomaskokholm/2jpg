@@ -79,6 +79,9 @@ const Home: NextPage = () => {
         {imgSrc && (
           <>
             <img src={imgSrc} width="auto" height="auto" />
+            <a href={imgSrc} title={imgSrc}>
+              Image link
+            </a>
             <button onClick={share}>Download</button>
           </>
         )}
