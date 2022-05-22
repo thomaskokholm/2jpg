@@ -5,7 +5,6 @@ import { useState } from 'react'
 const Home: NextPage = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [imgSrc, setImgSrc] = useState<string>('')
-  const [myBlob, setMyBlob] = useState<Blob>()
 
   const handleChange = (e: any) => {
     setLoading(true)
@@ -15,24 +14,12 @@ const Home: NextPage = () => {
     fetch('/api/convert', { method: 'post', body: formData })
       .then((response) => response.blob())
       .then((_myBlob) => {
-        setMyBlob(_myBlob)
         const objectURL = URL.createObjectURL(_myBlob)
         setLoading(false)
         setImgSrc(objectURL)
       })
   }
-  const share = (e: any) => {
-    if (myBlob && navigator.canShare) {
-      const newFile = new File([myBlob], 'name')
-      navigator.share({
-        title: 'Download',
-        text: 'Download image as JPEG',
-        files: [newFile],
-      })
-    } else {
-      console.log('Web Share API is not supported in your browser.')
-    }
-  }
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
@@ -65,24 +52,61 @@ const Home: NextPage = () => {
         <h1 className="text-6xl font-bold">Convert 2 JPEG</h1>
 
         {loading ? (
-          <p className="mt-3 text-2xl">Processing...</p>
+          <p className="mt-3">Processing...</p>
         ) : (
-          <>
-            <p className="mt-3 text-2xl">
-              Choose any image file and retrieve it as JPEG.
-            </p>
-            <p className="mt-3">
-              <input accept="*" type="file" onChange={handleChange} />
-            </p>
-          </>
+          <p className="mt-3">
+            <div className="mb-3 w-96">
+              <label
+                htmlFor="formFile"
+                className="form-label mb-2 inline-block text-gray-700"
+              >
+                Choose any image file and retrieve it as JPEG.
+              </label>
+              <input
+                className="form-control
+    m-0
+    block
+    w-full
+    rounded
+    border
+    border-solid
+    border-gray-300
+    bg-white bg-clip-padding
+    px-3 py-1.5 text-base
+    font-normal
+    text-gray-700
+    transition
+    ease-in-out
+    focus:border-blue-600 focus:bg-white focus:text-gray-700 focus:outline-none"
+                type="file"
+                id="formFile"
+                accept="image/*"
+                onChange={handleChange}
+              />
+            </div>
+          </p>
         )}
         {imgSrc && (
           <>
-            <img src={imgSrc} width="auto" height="auto" />
-            <a href={imgSrc} title={imgSrc}>
-              Image link
+            <a
+              type="button"
+              href={imgSrc}
+              title={imgSrc}
+              className="my-2 inline-block rounded bg-blue-600 px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg"
+            >
+              Download
             </a>
-            <button onClick={share}>Download</button>
+
+            <img src={imgSrc} width="auto" height="auto" />
+
+            <a
+              type="button"
+              href={imgSrc}
+              title={imgSrc}
+              className="my-2 inline-block rounded bg-blue-600 px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg"
+            >
+              Download
+            </a>
           </>
         )}
       </main>
